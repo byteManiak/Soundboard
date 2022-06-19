@@ -1,6 +1,6 @@
 #pragma once
 
-struct _Backend_State {
+struct _Backend {
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 };

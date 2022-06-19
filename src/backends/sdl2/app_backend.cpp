@@ -2,37 +2,37 @@
 
 #include <SDL.h>
 #include "log.h"
-#include "_app_backend.h"
+#include "sdl2_backend.h"
 
-bool SB_Backend_Init(SB_App *app)
+bool SB_Backend_Init(Backend **backend)
 {
-	Backend_State *beState = nullptr;
+	Backend *newBackend = nullptr;
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) goto fail_init;
 
-	beState = new Backend_State;
-	if (!beState) SB_LogError_Goto(fail_alloc, "Couldn't allocate backend state.\n");
+	newBackend = new Backend;
+	if (!newBackend) SB_LogError_Goto(fail_alloc, "Couldn't allocate backend state.\n");
 
-	beState->window = SDL_CreateWindow("Soundboard!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_RESIZABLE);
-	if (!beState->window) goto fail_create_window;
-	beState->renderer = SDL_CreateRenderer(beState->window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-	if (!beState->renderer) goto fail_create_renderer;
+	newBackend->window = SDL_CreateWindow("Soundboard!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_RESIZABLE);
+	if (!newBackend->window) goto fail_create_window;
+	newBackend->renderer = SDL_CreateRenderer(newBackend->window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+	if (!newBackend->renderer) goto fail_create_renderer;
 
-	app->beState = beState;
+	*backend = newBackend;
 	return true;
 
 fail_create_renderer:
-	SDL_DestroyWindow(beState->window);
+	SDL_DestroyWindow(newBackend->window);
 fail_create_window:
-	delete(beState);
+	delete(newBackend);
 fail_alloc:
 	SDL_Quit();
 fail_init:
 	return false;
 }
 
-void SB_Backend_Destroy(SB_App *app)
+void SB_Backend_Destroy(Backend *backend)
 {
-	SDL_DestroyRenderer(app->beState->renderer);
-	SDL_free(app->beState->window);
+	SDL_DestroyRenderer(backend->renderer);
+	SDL_free(backend->window);
 }

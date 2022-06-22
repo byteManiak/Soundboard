@@ -18,6 +18,8 @@ bool SB_Backend_Init(Backend **backend)
 	newBackend->renderer = SDL_CreateRenderer(newBackend->window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 	if (!newBackend->renderer) goto fail_create_renderer;
 
+	newBackend->textures.reserve(1024);
+
 	*backend = newBackend;
 	return true;
 

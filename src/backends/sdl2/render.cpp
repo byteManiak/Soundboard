@@ -1,6 +1,5 @@
 #include "render.h"
 
-#include <SDL.h>
 #include "sdl2_backend.h"
 
 void SB_BeginRender(Backend *backend)
